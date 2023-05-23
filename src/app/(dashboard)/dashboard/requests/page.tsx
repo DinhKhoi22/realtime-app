@@ -9,15 +9,37 @@ const page = async () => {
     const session = await getServerSession(authOptions);
     if(!session) notFound()
 
-    const incomingSenderIds = (await fetchRedis('smembers', `user:${session.user.id}:incoming_friend_requests`)) as string[];
+    const incomingSenderIds = (await fetchRedis('smembers', `user:${session.user.id}:incoming_friend_request`)) as string[];
+
+  //   export async function fetchRedis (
+  //     command: smemebers,
+  //     ...args: [`user:${session.user.id}:incoming_friend_request`]
+  // ) {
+  //     const commandUrl = `${upstashRedisRestUrl}/${command}/${args.join('/')}`
+  
+  //     const response = await fetch(commandUrl, {
+  //         headers: {
+  //             Authorization: `Bearer ${authToken}`
+  //         },
+  //         cache: 'no-store'
+  //     });
+  
+  //     if(!response.ok){
+  //         throw new Error(`Error executing Redis command: ${response.statusText}`)
+  //     }
+  
+  //     const data = await response.json()
+  //     return data.result
+  // }
 
     const incomingFriendRequests = await Promise.all(
         incomingSenderIds.map(async (senderId) => {
-            const sender = await fetchRedis('get', `user:${senderId}`) as User;
+            const sender = (await fetchRedis('get', `user:${senderId}`)) as string;
+            const senderParsed = JSON.parse(sender) as User;
 
             return {
                 senderId,
-                senderEmail: sender.email,
+                senderEmail: senderParsed.email,
             }
         })
     )

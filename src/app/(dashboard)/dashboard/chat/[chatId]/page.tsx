@@ -2,11 +2,12 @@ import { getServerSession } from 'next-auth'
 import { notFound } from 'next/navigation'
 import { fetchRedis } from '~/helpers/redis'
 import { authOptions } from '~/lib/auth'
-import { db } from '~/lib/db'
 import { messageArrayValidator } from '~/lib/validations/message'
 import Image from 'next/image'
 import Messages from '~/components/Messages'
 import ChatInput from '~/components/ChatInput'
+import { Trash2 } from 'lucide-react'
+import Modal from '~/components/Modal'
 
 interface PageProps {
     params: {
@@ -81,7 +82,11 @@ const page = async ({params}: PageProps) => {
                         {chatPartner.email}
                     </span>
                 </div>
+
             </div>
+
+            <Modal />
+
         </div>
 
         <Messages

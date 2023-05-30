@@ -93,8 +93,9 @@ const Messages : FC<MessagesProps> = ({initialMessages, sessionId, sessionImg, c
                                 alt='Profile picture'
                                 referrerPolicy='no-referrer'
                                 className='rounded-full'
-                            />
+                            />                            
                         </div>
+                        <div>Delete message</div>
                     </div>
                 </div>
             )

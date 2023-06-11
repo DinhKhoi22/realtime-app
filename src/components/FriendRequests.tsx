@@ -48,7 +48,7 @@ const FriendRequests : FC<FriendRequestsProps> = ({incomingFriendRequests, sessi
     }
 
     const denyFriend = async (senderId: string) => {
-        await axios.post('/api/friends/deny', {id: senderId})
+        await post('/api/friends/deny', {id: senderId})
 
         setFriendRequests((prev) => 
             prev.filter((request) => request.senderId !== senderId)
@@ -87,3 +87,7 @@ const FriendRequests : FC<FriendRequestsProps> = ({incomingFriendRequests, sessi
 }
 
 export default FriendRequests
+
+function post(arg0: string, arg1: { id: string }) {
+    throw new Error('Function not implemented.')
+}

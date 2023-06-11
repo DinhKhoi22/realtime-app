@@ -1,14 +1,45 @@
 'use client'
 
-import { Fragment, useRef, useState } from 'react'
+import { FC ,Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Trash2 } from 'lucide-react'
+import axios from 'axios'
+import Button from './ui/Button'
 
-export default function Modal() {
-  const [open, setOpen] = useState(false)
+interface ModalProps {
+  parseMessages: string[]
+  chatId: string
+}
 
+const Modal: FC<ModalProps> = ({ parseMessages, chatId }) => {
+  const textAreaRef = useRef<HTMLAreaElement | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState<boolean>(false)
+ 
   const cancelButtonRef = useRef(null)
+
+  const authToken = 'AYWsASQgZjhjZjVjNzQtYjIzMC00OWM5LTk1M2EtMGEyZTA4YjA2ZmM1ZTE4MWI1NWRiMWU1NGE2NmJmYmY1YzhiYTUyN2Q1ZDc='
+
+  const handleDeleteChat = async () => {
+    setIsLoading(true);
+    try {
+        await axios.post('/api/message/delete',
+        { chatId, parseMessages },
+        {    
+          headers: {
+            Authorization: `Bearer ${authToken}`
+          },
+        });
+  
+        textAreaRef.current?.focus();
+      } catch (error) {
+        console.log('Post',error)
+      } finally {
+        setOpen(false)
+        setIsLoading(false);
+      }
+  }
 
   return (
     <div
@@ -54,20 +85,21 @@ export default function Modal() {
                           </Dialog.Title>
                           <div className="mt-2">
                             <p className="text-sm text-gray-500">
-                              Are you sure you want to delete chat? .This action cannot be undone.
+                              Are you sure you want to delete chat? This action cannot be undone.
                             </p>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                      <button
+                      <Button
+                        isLoading={isLoading}
                         type="button"
                         className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                        onClick={() => setOpen(false)}
+                        onClick={handleDeleteChat}
                       >
                         Delete Chat
-                      </button>
+                      </Button>
                       <button
                         type="button"
                         className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
@@ -86,3 +118,5 @@ export default function Modal() {
     </div>
   )
 }
+
+export default Modal;

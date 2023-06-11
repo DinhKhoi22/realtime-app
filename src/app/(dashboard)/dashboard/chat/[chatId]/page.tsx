@@ -6,7 +6,6 @@ import { messageArrayValidator } from '~/lib/validations/message'
 import Image from 'next/image'
 import Messages from '~/components/Messages'
 import ChatInput from '~/components/ChatInput'
-import { Trash2 } from 'lucide-react'
 import Modal from '~/components/Modal'
 
 interface PageProps {
@@ -24,7 +23,7 @@ async function getChatMessages (chatId: string) {
             -1,
         )
 
-        const dbMessages = results.map((message) => JSON.parse(message) as Message)
+        const dbMessages = results.map((message) => JSON.parse(message) as Message) 
 
         const reverseDbMessages = dbMessages.reverse()
 
@@ -54,6 +53,8 @@ const page = async ({params}: PageProps) => {
     const chatPartnerRaw = await fetchRedis('get', `user:${chatPartnerId}`) as string;
     const chatPartner = JSON.parse(chatPartnerRaw) as User;
     const initialMessages = await getChatMessages(chatId);
+
+    const parseMessages = initialMessages.map((message) => JSON.parse(message.id));
 
  return (
     <div className='flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]'>
@@ -85,7 +86,7 @@ const page = async ({params}: PageProps) => {
 
             </div>
 
-            <Modal />
+            <Modal parseMessages={parseMessages} chatId={chatId}/>
 
         </div>
 

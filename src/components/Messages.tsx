@@ -95,7 +95,7 @@ const Messages : FC<MessagesProps> = ({initialMessages, sessionId, sessionImg, c
                                 className='rounded-full'
                             />                            
                         </div>
-                        <div>Delete message</div>
+                        {/* <div>Delete message</div> */}
                     </div>
                 </div>
             )
